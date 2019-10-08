@@ -7,14 +7,14 @@
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"
     />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <!-- <script src=”/socket.io/socket.io.js”> </script> -->
+    <script type="text/javascript" src="resources/js/socket.io.js"></script>
   </head>
 
   <body>
-    <div class="container" style="max-width: 700px;">
-      <br />
-      <div class="jumbotron">
-        <h2 class="display-4">Test Chat Application</h2>
+    <div class="container" style="max-width: 800px; padding: 20px;">
+        <div class="jumbotron">
+            <h2 class="display-4" style="margin-top: 0px; padding: 20px;"><b>Test Chat Application</b></h2>
+            <div id="messages"></div>
         <br />
         <input
           id="username"
@@ -32,14 +32,9 @@
         <br />
         <button id="send" class="btn btn-success">Post It!</button>
       </div>
-      <div class="container" style="max-width: 600px;">
-        <div class="jumbotron">
-          <h3 class="display-4"><u><i>The chats should go down here</i></u></h3>
-          <div id="messages"></div>
-        </div>
-      </div>
-    </div>
     <script>
+    var socket = io();
+    socket.on('message', addMessages)
       $(() => {
         $('#send').click(() => {
           sendMessage({
@@ -53,7 +48,8 @@
       function addMessages(message) {
         $('#messages').append(`
             <h4> ${message.name} </h4>
-            <p>  ${message.message} </p>`);
+            <p> ${message.message} </p>
+            <p style="font-size:90%;"> ${message.created_at.slice(0, 19).replace('T', ' ')} </p>`);
       }
 
       function getMessages() {

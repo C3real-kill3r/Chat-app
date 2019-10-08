@@ -6,6 +6,7 @@ const pool = new Pool({
   password: 'password',
   port: 5432
 });
+
 const getMessages = (request, response) => {
   pool.query('SELECT * FROM Messages ORDER BY id ASC', (error, results) => {
     if (error) {
@@ -24,6 +25,8 @@ const createMessage = (request, response) => {
       if (error) {
         throw error;
       }
+      io.emit('message', req.body);
+      res.sendStatus(200);
       response.status(201).send(`Message added with ID: ${result.insertId}`);
     }
   );
