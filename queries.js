@@ -14,8 +14,8 @@ const getMessages = (request, response) => {
     response.status(200).json(results.rows);
   });
 };
-const createMessage = (req, response) => {
-  var message = new Message(req.body);
+const createMessage = (request, response) => {
+  const { name, message } = request.body;
 
   pool.query(
     'INSERT INTO Messages (name, message) VALUES ($1, $2)',
