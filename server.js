@@ -1,20 +1,36 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 var app = express();
 
 app.use(express.static(__dirname));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-const MongoClient = require('mongodb').MongoClient;
-const uri =
-  'mongodb+srv://brybzlee:Iloveit@brybz-lee-aymrc.mongodb.net/admin?retryWrites=true&w=majority';
-const client = new MongoClient(uri, { useNewUrlParser: true });
-client.connect(err => {
-  const collection = client.db('test').collection('devices');
-  // perform actions on the collection object
-  client.close();
+const { Client } = require('pg');
+const connectionString = 'postgres://postgres:postgres@localhost:5432/chat_app';
+const client = new Client({
+  connectionString: connectionString
 });
+client.connect();
+
+app.get('/messages', (req, res) => {
+    Message.find({}, (err, messages) => {
+        res.send(messages);
+    })
+})
+
+app.post('/messages', (req, res) => {
+    var message = new Message(req.body);
+    message.save((err) => {
+        if (err)
+            sendStatus(500);
+        res.sendStatus(200);
+    })
+})
+
 
 var server = app.listen(3000, () => {
-  console.log('server is running on port', server.address().port);
+    console.log('server is running on port', server.address().port);
 });
